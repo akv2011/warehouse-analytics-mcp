@@ -1,0 +1,67 @@
+installs:
+  description: New installs, counted on the install date.
+  unit: users
+  table: users
+  date_column: install_date
+  expression: count(*)
+
+active_users:
+  description: People with at least one session in the period (DAU at day grain, WAU and MAU at week and month).
+  unit: users
+  table: sessions
+  date_column: session_date
+  expression: count(DISTINCT f.user_id)
+
+sessions:
+  description: Sessions started in the period.
+  unit: sessions
+  table: sessions
+  date_column: session_date
+  expression: sum(f.sessions)
+
+iap_revenue:
+  description: In-app purchase revenue.
+  unit: usd
+  table: purchases
+  date_column: purchased_at
+  expression: sum(f.amount_usd)
+
+ad_revenue:
+  description: Ad revenue across all ad networks.
+  unit: usd
+  table: ad_revenue
+  date_column: revenue_date
+  expression: sum(f.revenue_usd)
+
+paying_users:
+  description: People with at least one purchase in the period.
+  unit: users
+  table: purchases
+  date_column: purchased_at
+  expression: count(DISTINCT f.user_id)
+
+d1_retention:
+  description: Share of the period's installs who came back the day after installing.
+  unit: ratio
+  table: users
+  date_column: install_date
+  expression: avg(CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id = f.user_id AND s.session_date = f.install_date + 1) THEN 1 ELSE 0 END)
+
+d7_retention:
+  description: Share of the period's installs who came back seven days after installing.
+  unit: ratio
+  table: users
+  date_column: install_date
+  expression: avg(CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id = f.user_id AND s.session_date = f.install_date + 7) THEN 1 ELSE 0 END)
+
+arpu:
+  description: In-app plus ad revenue per active user in the period (ARPDAU at day grain).
+  unit: usd
+  numerator: [iap_revenue, ad_revenue]
+  denominator: active_users
+
+payer_conversion:
+  description: Paying users as a share of active users in the period.
+  unit: ratio
+  numerator: [paying_users]
+  denominator: active_users
