@@ -81,7 +81,7 @@ MCP Inspector:
 npx @modelcontextprotocol/inspector /path/to/warehouse-analytics-mcp/.venv/bin/warehouse-mcp
 ```
 
-Checked on 2026-10-08: Claude Code 2.1.294 connects; MCP Inspector lists the four tools, runs `query_metric` and gets `run_sql` refusing `read_csv('/etc/hosts')` with `isError`; Codex CLI 0.156.1 and Gemini CLI 0.63.0 accept the config.
+Checked on 2026-10-08: Claude Code 2.1.294 connects; MCP Inspector lists the four tools, runs `query_metric` and gets `run_sql` refusing `read_csv('/etc/hosts')` with `isError`; Codex CLI 0.156.1 accepts the config; Gemini CLI 0.63.0 ran headless, called `list_metrics` and answered with the right count. Gemini CLI marks servers "Disabled" in a folder it does not trust; trust the folder or pass `--skip-trust`.
 
 ## Tests
 
